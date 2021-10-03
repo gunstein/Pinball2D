@@ -3,6 +3,7 @@ Testing the Bevy game engine and Rapier physics engine for a simple 2D pinball g
 
 (under construction)
 
-Video showing the game as it is now:
 
-https://youtu.be/UMYlovB7-so
+<img src="/Screenshot_pinball2d.png?raw=true" width="200">
+
+
