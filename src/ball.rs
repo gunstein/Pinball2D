@@ -23,7 +23,6 @@ fn spawn_ball(
     let ball_pos : Point2<f32> = Point2::new(0.3, -0.2);
 
     let shape_ball = shapes::Circle{
-        //radius:10.0,
         radius: 0.03 * rapier_config.scale,
         center: Vec2::ZERO,
     };
@@ -42,7 +41,6 @@ fn spawn_ball(
         shape: ColliderShape::ball(shape_ball.radius/rapier_config.scale),
         collider_type: ColliderType::Solid,
         flags: (ActiveEvents::INTERSECTION_EVENTS).into(),
-        //position: [1.0, 10.0].into(),
         position: ball_pos.into(),
         material: ColliderMaterial {
             restitution: 0.7,

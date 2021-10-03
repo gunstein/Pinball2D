@@ -26,14 +26,17 @@ fn spawn_walls(
     };
 
     //Spawn bottom wall
-    let bottom_wall_pos : Point2<f32> = Point2::new(0.0, -0.63);
+    let bottom_wall_pos : Point2<f32> = Point2::new(0.0, -0.64);
     commands
         .spawn()
         .insert_bundle(
             GeometryBuilder::build_as(
                 &shape_top_and_bottom_wall,
-                ShapeColors::outlined(Color::TEAL, Color::BLACK),
-                DrawMode::Stroke(StrokeOptions::default().with_line_width(2.0)),
+                ShapeColors::outlined(Color::TEAL, Color::TEAL),
+                DrawMode::Outlined {
+                    fill_options: FillOptions::default(),
+                    outline_options: StrokeOptions::default(),
+                },
                 Transform::default(),
             )
         )
@@ -51,14 +54,17 @@ fn spawn_walls(
         .insert(ColliderDebugRender::with_id(0));
      
     //Spawn top wall
-    let top_wall_pos : Point2<f32> = Point2::new(0.0, 0.63);
+    let top_wall_pos : Point2<f32> = Point2::new(0.0, 0.64);
     commands
         .spawn()
         .insert_bundle(
             GeometryBuilder::build_as(
                 &shape_top_and_bottom_wall,
-                ShapeColors::outlined(Color::TEAL, Color::BLACK),
-                DrawMode::Stroke(StrokeOptions::default().with_line_width(2.0)),
+                ShapeColors::outlined(Color::TEAL, Color::TEAL),
+                DrawMode::Outlined {
+                    fill_options: FillOptions::default(),
+                    outline_options: StrokeOptions::default(),
+                },
                 Transform::default(),
             )
         )
@@ -88,8 +94,11 @@ fn spawn_walls(
         .insert_bundle(
             GeometryBuilder::build_as(
                 &shape_left_and_right_wall,
-                ShapeColors::outlined(Color::TEAL, Color::BLACK),
-                DrawMode::Stroke(StrokeOptions::default().with_line_width(2.0)),
+                ShapeColors::outlined(Color::TEAL, Color::TEAL),
+                DrawMode::Outlined {
+                    fill_options: FillOptions::default(),
+                    outline_options: StrokeOptions::default(),
+                },
                 Transform::default(),
             )
         )
@@ -112,8 +121,11 @@ fn spawn_walls(
         .insert_bundle(
             GeometryBuilder::build_as(
                 &shape_left_and_right_wall,
-                ShapeColors::outlined(Color::TEAL, Color::BLACK),
-                DrawMode::Stroke(StrokeOptions::default().with_line_width(2.0)),
+                ShapeColors::outlined(Color::TEAL, Color::TEAL),
+                DrawMode::Outlined {
+                    fill_options: FillOptions::default(),
+                    outline_options: StrokeOptions::default(),
+                },
                 Transform::default(),
             )
         )
@@ -142,8 +154,11 @@ fn spawn_walls(
         .insert_bundle(
             GeometryBuilder::build_as(
                 &shape_launcher_wall,
-                ShapeColors::outlined(Color::TEAL, Color::BLACK),
-                DrawMode::Stroke(StrokeOptions::default().with_line_width(2.0)),
+                ShapeColors::outlined(Color::TEAL, Color::TEAL),
+                DrawMode::Outlined {
+                    fill_options: FillOptions::default(),
+                    outline_options: StrokeOptions::default(),
+                },
                 Transform::default(),
             )
         )
@@ -177,8 +192,11 @@ fn spawn_walls(
     .insert_bundle(
         GeometryBuilder::build_as(
             &shape_upper_right_obstruction,
-            ShapeColors::outlined(Color::TEAL, Color::BLACK),
-            DrawMode::Stroke(StrokeOptions::default().with_line_width(2.0)),
+            ShapeColors::outlined(Color::TEAL, Color::TEAL),
+            DrawMode::Outlined {
+                fill_options: FillOptions::default(),
+                outline_options: StrokeOptions::default(),
+            },
             Transform::default(),
         )
     )

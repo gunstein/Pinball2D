@@ -15,6 +15,9 @@ use walls::*;
 mod launcher;
 use launcher::*;
 
+mod pins;
+use pins::*;
+
 fn main() {
     App::build()
         .insert_resource(WindowDescriptor {
@@ -28,6 +31,7 @@ fn main() {
         .add_plugin(LauncherPlugin) 
         .add_plugin(FlippersPlugin)
         .add_plugin(BallPlugin)
+        .add_plugin(PinsPlugin)
         .add_plugin(ShapePlugin)
         .add_startup_system(setup.system().label("main_setup"))
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
