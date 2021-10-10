@@ -56,7 +56,6 @@ fn spawn_flippers(
             ..Default::default()
         })
         .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::with_id(0))
         .insert(LeftFlipper{point_of_rotation: Point2::new(left_flipper_pos.x -((shape_flipper.width/rapier_config.scale)/2.0), left_flipper_pos.y +(shape_flipper.height/rapier_config.scale)/2.0)});
 
         //Spawn right flipper
@@ -82,7 +81,6 @@ fn spawn_flippers(
             ..Default::default()
         })
         .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::with_id(0))
         .insert(RightFlipper{point_of_rotation: Point2::new(right_flipper_pos.x + ((shape_flipper.width/rapier_config.scale)/2.0), right_flipper_pos.y +(shape_flipper.height/rapier_config.scale)/2.0)});
     
 }

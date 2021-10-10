@@ -36,7 +36,10 @@ fn spawn_ball(
             Transform::default(),
         )
     )
-    .insert_bundle(RigidBodyBundle::default())
+    .insert_bundle(RigidBodyBundle {
+        ccd: RigidBodyCcd { ccd_enabled: true, ..Default::default() },
+        ..Default::default()
+    })
     .insert_bundle(ColliderBundle {
         shape: ColliderShape::ball(shape_ball.radius/rapier_config.scale),
         collider_type: ColliderType::Solid,
@@ -49,7 +52,6 @@ fn spawn_ball(
         ..ColliderBundle::default()
     })
     .insert(ColliderPositionSync::Discrete)
-    .insert(ColliderDebugRender::with_id(0))
     .insert(Ball);
 }
 

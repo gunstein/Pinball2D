@@ -50,8 +50,7 @@ fn spawn_walls(
             position: bottom_wall_pos.into(),
             ..Default::default()
         })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::with_id(0));
+        .insert(ColliderPositionSync::Discrete);
      
     //Spawn top wall
     let top_wall_pos : Point2<f32> = Point2::new(0.0, 0.64);
@@ -77,8 +76,7 @@ fn spawn_walls(
             position: top_wall_pos.into(),
             ..Default::default()
         })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::with_id(0));        
+        .insert(ColliderPositionSync::Discrete);        
 
     //Spawn left and right wall
     let shape_left_and_right_wall = shapes::Rectangle {
@@ -111,8 +109,7 @@ fn spawn_walls(
             position: left_wall_pos.into(),
             ..Default::default()
         })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::with_id(0));
+        .insert(ColliderPositionSync::Discrete);
      
     //Spawn right wall
     let right_wall_pos : Point2<f32> = Point2::new(0.35, 0.0);
@@ -138,8 +135,7 @@ fn spawn_walls(
             position: right_wall_pos.into(),
             ..Default::default()
         })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::with_id(0));        
+        .insert(ColliderPositionSync::Discrete);        
 
     //Spawn launcher wall
     let shape_launcher_wall = shapes::Rectangle {
@@ -171,8 +167,7 @@ fn spawn_walls(
             position: launcher_wall_pos.into(),
             ..Default::default()
         })
-        .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::with_id(0)); 
+        .insert(ColliderPositionSync::Discrete); 
 
 
     //Spawn upper right obstruction
@@ -214,6 +209,5 @@ fn spawn_walls(
         position: upper_right_obstruction_pos.into(),
         ..Default::default()
     })
-    .insert(ColliderPositionSync::Discrete)
-    .insert(ColliderDebugRender::with_id(0)); 
+    .insert(ColliderPositionSync::Discrete); 
 }

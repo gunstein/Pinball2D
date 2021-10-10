@@ -50,7 +50,6 @@ fn spawn_launcher(
             ..Default::default()
         })
         .insert(ColliderPositionSync::Discrete)
-        .insert(ColliderDebugRender::with_id(0))
         .insert(Launcher{start_point: launcher_pos});
     
 }
@@ -60,17 +59,17 @@ fn launcher_movement(
     mut launcher_info: Query<(&Launcher, &mut RigidBodyPosition)>,
 ) {
     for (launcher, mut rbodypos) in launcher_info.iter_mut() {
-
-        //let mut next_position = rbodypos.position;
+        let mut next_ypos = rbodypos.position.translation.vector.y;
+        
         if keyboard_input.pressed(KeyCode::Space)
         {
-            rbodypos.next_position = rbodypos.position;
-            rbodypos.next_position.translation.vector.y = launcher.start_point.y + 0.04;
+            next_ypos = next_ypos + 0.04;
         }
         else
         {
-            rbodypos.next_position = rbodypos.position;
-            rbodypos.next_position.translation.vector.y = launcher.start_point.y;
-        }       
+            next_ypos = next_ypos - 0.04;
+        }   
+        let clamped_ypos = next_ypos.clamp(launcher.start_point.y, launcher.start_point.y + 0.05);
+        rbodypos.next_position.translation.vector.y = clamped_ypos;    
     }
 }

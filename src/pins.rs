@@ -82,7 +82,6 @@ fn spawn_single_pin(
         ..ColliderBundle::default()
     })
     .insert(ColliderPositionSync::Discrete)
-    .insert(ColliderDebugRender::with_id(0))
     .insert(Pin{timestamp_last_hit: temp_timestamp_last_hit, position: position });
 }
 
