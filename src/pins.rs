@@ -6,7 +6,7 @@ use bevy_prototype_lyon::prelude::*;
 pub struct PinsPlugin;
 
 impl Plugin for PinsPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app
             .add_startup_system(spawn_pins.system().after("launcher").label("pins"))
             .add_system(handle_pin_events.system())
@@ -14,6 +14,7 @@ impl Plugin for PinsPlugin {
     }
 }
 
+#[derive(Component)]
 struct Pin{
     timestamp_last_hit : f64,
     position : Point2<f32>,
@@ -61,24 +62,26 @@ fn spawn_single_pin(
     .insert_bundle(
         GeometryBuilder::build_as(
             &shape_pin,
-            ShapeColors::outlined(color, Color::BLACK),
-            DrawMode::Stroke(StrokeOptions::default().with_line_width(2.0)),
+            DrawMode::Outlined{
+                fill_mode: FillMode::color(Color::BLACK),
+                outline_mode: StrokeMode::new(color, 2.0),
+            },
             Transform::default(),
         )
     )
     .insert_bundle(RigidBodyBundle {
-        body_type: RigidBodyType::Static,
+        body_type: RigidBodyType::Static.into(),
         ..Default::default()
     })
     .insert_bundle(ColliderBundle {
-        shape: ColliderShape::ball(shape_pin.radius/rapier_config.scale),
-        collider_type: ColliderType::Solid,
+        shape: ColliderShape::ball(shape_pin.radius/rapier_config.scale).into(),
+        collider_type: ColliderType::Solid.into(),
         flags: (ActiveEvents::CONTACT_EVENTS).into(),
         position: position.into(),
         material: ColliderMaterial {
             restitution: 0.7,
             ..Default::default()
-        },
+        }.into(),
         ..ColliderBundle::default()
     })
     .insert(ColliderPositionSync::Discrete)
