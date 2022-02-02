@@ -65,7 +65,7 @@ fn handle_ball_events(
     mut commands: Commands,
     rapier_config: ResMut<RapierConfiguration>
 ) {
-    
+    //This check is only ok because it's only one sensor (the bottom wall) in the game.
     let mut should_spawn_ball = false;
     for intersection_event in intersection_events.iter() {
         for entity in query.iter() {
