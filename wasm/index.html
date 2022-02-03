@@ -1,0 +1,48 @@
+
+  
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+	background-color: black;
+      }
+    </style>
+  </head>
+  <script type="module">
+  	import init from './target/wasm_pinball2d.js';
+	async function run(){
+		await init()
+		
+	}
+	run();
+  </script>
+  
+  <script>
+	//Force focus to game-canvas.  
+  	const targetNode = document.documentElement || document.body;
+  	const config = {childList: true, subtree: true};
+  	
+  	const callback = function(mutationsList, observer) {
+	    for(let mutation of mutationsList) {
+		if (mutation.type === 'childList') {
+		    // Elements have changed
+		    let canvas = document.querySelector("canvas");
+		    if (canvas !== null)
+		    {
+		    	canvas.focus();
+		    	canvas.onblur = function() {
+			    var me = this;
+			    setTimeout(function() {
+				me.focus();
+			    }, 50);
+			}
+		    }
+		}
+	    }
+	};
+
+	const observer = new MutationObserver(callback);
+	observer.observe(targetNode, config);
+  </script>
+</html>

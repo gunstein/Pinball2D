@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        background: linear-gradient(
+          135deg,
+          white 0%,
+          white 49%,
+          black 49%,
+          black 51%,
+          white 51%,
+          white 100%
+        );
+        background-repeat: repeat;
+        background-size: 20px 20px;
+      }
+      canvas {
+        background-color: white;
+      }
+    </style>
+  </head>
+  <script type="module">
+  	import init from './target/wasm_pinball.js';
+	async function run(){
+		await init()
+		
+	}
+	run();
+  </script>
+  
+  <script>
+  	const targetNode = document.documentElement || document.body;
+  	const config = {childList: true, subtree: true};
+  	
+  	const callback = function(mutationsList, observer) {
+	    for(let mutation of mutationsList) {
+		if (mutation.type === 'childList') {
+		    // Elements have changed
+		    let canvas = document.querySelector("canvas");
+		    if (canvas !== null)
+		    {
+		    	canvas.focus();
+		    	canvas.onblur = function() {
+			    var me = this;
+			    setTimeout(function() {
+				me.focus();
+			    }, 50);
+			}
+		    }
+		}
+	    }
+	};
+
+	const observer = new MutationObserver(callback);
+	observer.observe(targetNode, config);
+  </script>
+</html>

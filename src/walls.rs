@@ -6,7 +6,7 @@ use bevy_prototype_lyon::prelude::*;
 pub struct WallsPlugin;
 
 impl Plugin for WallsPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app
             .add_startup_system(spawn_walls.system().after("main_setup").label("walls"));
     }
@@ -20,8 +20,7 @@ fn spawn_walls(
     //Spawn outer wall
     //Spawn top and bottom wall
     let shape_top_and_bottom_wall = shapes::Rectangle {
-        width: 0.73*rapier_config.scale,
-        height: 0.03*rapier_config.scale,
+        extents: Vec2::new(0.73*rapier_config.scale, 0.03*rapier_config.scale),
         origin: shapes::RectangleOrigin::Center
     };
 
@@ -32,21 +31,20 @@ fn spawn_walls(
         .insert_bundle(
             GeometryBuilder::build_as(
                 &shape_top_and_bottom_wall,
-                ShapeColors::outlined(Color::TEAL, Color::TEAL),
-                DrawMode::Outlined {
-                    fill_options: FillOptions::default(),
-                    outline_options: StrokeOptions::default(),
-                },
+                DrawMode::Outlined{
+                    fill_mode: FillMode::color(Color::TEAL),
+                    outline_mode: StrokeMode::color(Color::TEAL),
+                },                
                 Transform::default(),
             )
         )
         .insert_bundle(RigidBodyBundle {
-            body_type: RigidBodyType::Static,
+            body_type: RigidBodyType::Static.into(),
             ..Default::default()
         })
         .insert_bundle(ColliderBundle {
-            collider_type: ColliderType::Sensor,
-            shape: ColliderShape::cuboid(shape_top_and_bottom_wall.width/rapier_config.scale/2.0, shape_top_and_bottom_wall.height/rapier_config.scale/2.0),
+            collider_type: ColliderType::Sensor.into(),
+            shape: ColliderShape::cuboid(shape_top_and_bottom_wall.extents.x/rapier_config.scale/2.0, shape_top_and_bottom_wall.extents.y/rapier_config.scale/2.0).into(),
             position: bottom_wall_pos.into(),
             ..Default::default()
         })
@@ -59,20 +57,19 @@ fn spawn_walls(
         .insert_bundle(
             GeometryBuilder::build_as(
                 &shape_top_and_bottom_wall,
-                ShapeColors::outlined(Color::TEAL, Color::TEAL),
-                DrawMode::Outlined {
-                    fill_options: FillOptions::default(),
-                    outline_options: StrokeOptions::default(),
+                DrawMode::Outlined{
+                    fill_mode: FillMode::color(Color::TEAL),
+                    outline_mode: StrokeMode::color(Color::TEAL),
                 },
                 Transform::default(),
             )
         )
         .insert_bundle(RigidBodyBundle {
-            body_type: RigidBodyType::Static,
+            body_type: RigidBodyType::Static.into(),
             ..Default::default()
         })
         .insert_bundle(ColliderBundle {
-            shape: ColliderShape::cuboid(shape_top_and_bottom_wall.width/rapier_config.scale/2.0, shape_top_and_bottom_wall.height/rapier_config.scale/2.0),
+            shape: ColliderShape::cuboid(shape_top_and_bottom_wall.extents.x/rapier_config.scale/2.0, shape_top_and_bottom_wall.extents.y/rapier_config.scale/2.0).into(),
             position: top_wall_pos.into(),
             ..Default::default()
         })
@@ -80,8 +77,7 @@ fn spawn_walls(
 
     //Spawn left and right wall
     let shape_left_and_right_wall = shapes::Rectangle {
-        width: 0.03*rapier_config.scale,
-        height: 1.3*rapier_config.scale,
+        extents: Vec2::new(0.03*rapier_config.scale, 1.3*rapier_config.scale),
         origin: shapes::RectangleOrigin::Center
     };
 
@@ -92,20 +88,19 @@ fn spawn_walls(
         .insert_bundle(
             GeometryBuilder::build_as(
                 &shape_left_and_right_wall,
-                ShapeColors::outlined(Color::TEAL, Color::TEAL),
-                DrawMode::Outlined {
-                    fill_options: FillOptions::default(),
-                    outline_options: StrokeOptions::default(),
+                DrawMode::Outlined{
+                    fill_mode: FillMode::color(Color::TEAL),
+                    outline_mode: StrokeMode::color(Color::TEAL),
                 },
                 Transform::default(),
             )
         )
         .insert_bundle(RigidBodyBundle {
-            body_type: RigidBodyType::Static,
+            body_type: RigidBodyType::Static.into(),
             ..Default::default()
         })
         .insert_bundle(ColliderBundle {
-            shape: ColliderShape::cuboid(shape_left_and_right_wall.width/rapier_config.scale/2.0, shape_left_and_right_wall.height/rapier_config.scale/2.0),
+            shape: ColliderShape::cuboid(shape_left_and_right_wall.extents.x/rapier_config.scale/2.0, shape_left_and_right_wall.extents.y/rapier_config.scale/2.0).into(),
             position: left_wall_pos.into(),
             ..Default::default()
         })
@@ -118,20 +113,19 @@ fn spawn_walls(
         .insert_bundle(
             GeometryBuilder::build_as(
                 &shape_left_and_right_wall,
-                ShapeColors::outlined(Color::TEAL, Color::TEAL),
-                DrawMode::Outlined {
-                    fill_options: FillOptions::default(),
-                    outline_options: StrokeOptions::default(),
+                DrawMode::Outlined{
+                    fill_mode: FillMode::color(Color::TEAL),
+                    outline_mode: StrokeMode::color(Color::TEAL),
                 },
                 Transform::default(),
             )
         )
         .insert_bundle(RigidBodyBundle {
-            body_type: RigidBodyType::Static,
+            body_type: RigidBodyType::Static.into(),
             ..Default::default()
         })
         .insert_bundle(ColliderBundle {
-            shape: ColliderShape::cuboid(shape_left_and_right_wall.width/rapier_config.scale/2.0, shape_left_and_right_wall.height/rapier_config.scale/2.0),
+            shape: ColliderShape::cuboid(shape_left_and_right_wall.extents.x/rapier_config.scale/2.0, shape_left_and_right_wall.extents.y/rapier_config.scale/2.0).into(),
             position: right_wall_pos.into(),
             ..Default::default()
         })
@@ -139,8 +133,7 @@ fn spawn_walls(
 
     //Spawn launcher wall
     let shape_launcher_wall = shapes::Rectangle {
-        width: 0.03*rapier_config.scale,
-        height: 0.5*rapier_config.scale,
+        extents: Vec2::new(0.03*rapier_config.scale, 0.5*rapier_config.scale),
         origin: shapes::RectangleOrigin::Center
     };
 
@@ -150,20 +143,19 @@ fn spawn_walls(
         .insert_bundle(
             GeometryBuilder::build_as(
                 &shape_launcher_wall,
-                ShapeColors::outlined(Color::TEAL, Color::TEAL),
-                DrawMode::Outlined {
-                    fill_options: FillOptions::default(),
-                    outline_options: StrokeOptions::default(),
+                DrawMode::Outlined{
+                    fill_mode: FillMode::color(Color::TEAL),
+                    outline_mode: StrokeMode::color(Color::TEAL),
                 },
                 Transform::default(),
             )
         )
         .insert_bundle(RigidBodyBundle {
-            body_type: RigidBodyType::Static,
+            body_type: RigidBodyType::Static.into(),
             ..Default::default()
         })
         .insert_bundle(ColliderBundle {
-            shape: ColliderShape::cuboid(shape_launcher_wall.width/rapier_config.scale/2.0, shape_launcher_wall.height/rapier_config.scale/2.0),
+            shape: ColliderShape::cuboid(shape_launcher_wall.extents.x/rapier_config.scale/2.0, shape_launcher_wall.extents.y/rapier_config.scale/2.0).into(),
             position: launcher_wall_pos.into(),
             ..Default::default()
         })
@@ -187,16 +179,15 @@ fn spawn_walls(
     .insert_bundle(
         GeometryBuilder::build_as(
             &shape_upper_right_obstruction,
-            ShapeColors::outlined(Color::TEAL, Color::TEAL),
-            DrawMode::Outlined {
-                fill_options: FillOptions::default(),
-                outline_options: StrokeOptions::default(),
+            DrawMode::Outlined{
+                fill_mode: FillMode::color(Color::TEAL),
+                outline_mode: StrokeMode::color(Color::TEAL),
             },
             Transform::default(),
         )
     )
     .insert_bundle(RigidBodyBundle {
-        body_type: RigidBodyType::Static,
+        body_type: RigidBodyType::Static.into(),
         ..Default::default()
     })
     .insert_bundle(ColliderBundle {
@@ -205,7 +196,7 @@ fn spawn_walls(
             Point2::new(0.0, 0.25),
             Point2::new(-0.2, 0.25),
             Point2::new(0.0, 0.0),
-            ), None),
+            ), None).into(),
         position: upper_right_obstruction_pos.into(),
         ..Default::default()
     })

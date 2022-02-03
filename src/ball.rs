@@ -6,13 +6,14 @@ use bevy_prototype_lyon::prelude::*;
 pub struct BallPlugin;
 
 impl Plugin for BallPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app
             .add_startup_system(spawn_ball.system().after("launcher").label("ball"))
             .add_system(handle_ball_events.system());
     }
 }
 
+#[derive(Component)]
 struct Ball;
 
 fn spawn_ball(    
@@ -31,24 +32,26 @@ fn spawn_ball(
     .insert_bundle(
         GeometryBuilder::build_as(
             &shape_ball,
-            ShapeColors::outlined(Color::TEAL, Color::BLACK),
-            DrawMode::Stroke(StrokeOptions::default().with_line_width(2.0)),
+            DrawMode::Outlined{
+                fill_mode: FillMode::color(Color::BLACK),
+                outline_mode: StrokeMode::new(Color::TEAL, 2.0),
+            },
             Transform::default(),
         )
     )
     .insert_bundle(RigidBodyBundle {
-        ccd: RigidBodyCcd { ccd_enabled: true, ..Default::default() },
+        ccd: RigidBodyCcd { ccd_enabled: true, ..Default::default() }.into(),
         ..Default::default()
     })
     .insert_bundle(ColliderBundle {
-        shape: ColliderShape::ball(shape_ball.radius/rapier_config.scale),
-        collider_type: ColliderType::Solid,
+        shape: ColliderShape::ball(shape_ball.radius/rapier_config.scale).into(),
+        collider_type: ColliderType::Solid.into(),
         flags: (ActiveEvents::INTERSECTION_EVENTS).into(),
         position: ball_pos.into(),
         material: ColliderMaterial {
             restitution: 0.7,
             ..Default::default()
-        },
+        }.into(),
         ..ColliderBundle::default()
     })
     .insert(ColliderPositionSync::Discrete)
@@ -62,7 +65,7 @@ fn handle_ball_events(
     mut commands: Commands,
     rapier_config: ResMut<RapierConfiguration>
 ) {
-    
+    //This check is only ok because it's only one sensor (the bottom wall) in the game.
     let mut should_spawn_ball = false;
     for intersection_event in intersection_events.iter() {
         for entity in query.iter() {

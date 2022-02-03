@@ -6,13 +6,14 @@ use bevy_prototype_lyon::prelude::*;
 pub struct LauncherPlugin;
 
 impl Plugin for LauncherPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app
             .add_startup_system(spawn_launcher.system().after("walls").label("launcher"))
             .add_system(launcher_movement.system());
     }
 }
 
+#[derive(Component)]
 struct Launcher{
     start_point : Point2<f32>,
  }
@@ -23,8 +24,7 @@ fn spawn_launcher(
 ) {
     //Spawn launcher
     let shape_launcher = shapes::Rectangle {
-        width: 0.05*rapier_config.scale,
-        height: 0.05*rapier_config.scale,
+        extents: Vec2::new(0.05*rapier_config.scale, 0.05*rapier_config.scale),
         origin: shapes::RectangleOrigin::Center
     };
 
@@ -35,17 +35,19 @@ fn spawn_launcher(
         .insert_bundle(
             GeometryBuilder::build_as(
                 &shape_launcher,
-                ShapeColors::outlined(Color::TEAL, Color::BLACK),
-                DrawMode::Stroke(StrokeOptions::default().with_line_width(2.0)),
+                DrawMode::Outlined{
+                    fill_mode: FillMode::color(Color::BLACK),
+                    outline_mode: StrokeMode::new(Color::TEAL, 2.0),
+                },
                 Transform::default(),
             )
         )
         .insert_bundle(RigidBodyBundle {
-            body_type: RigidBodyType::KinematicPositionBased,
+            body_type: RigidBodyType::KinematicPositionBased.into(),
             ..Default::default()
         })
         .insert_bundle(ColliderBundle {
-            shape: ColliderShape::cuboid(shape_launcher.width/rapier_config.scale/2.0, shape_launcher.height/rapier_config.scale/2.0),
+            shape: ColliderShape::cuboid(shape_launcher.extents.x/rapier_config.scale/2.0, shape_launcher.extents.y/rapier_config.scale/2.0).into(),
             position: launcher_pos.into(),
             ..Default::default()
         })
@@ -56,7 +58,7 @@ fn spawn_launcher(
 
 fn launcher_movement(
     keyboard_input: Res<Input<KeyCode>>,
-    mut launcher_info: Query<(&Launcher, &mut RigidBodyPosition)>,
+    mut launcher_info: Query<(&Launcher, &mut RigidBodyPositionComponent)>,
 ) {
     for (launcher, mut rbodypos) in launcher_info.iter_mut() {
         let mut next_ypos = rbodypos.position.translation.vector.y;

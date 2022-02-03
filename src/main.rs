@@ -19,13 +19,14 @@ mod pins;
 use pins::*;
 
 fn main() {
-    App::build()
+    App::new()
         .insert_resource(WindowDescriptor {
             title: "Pinball2d".to_string(),
             width: 360.0,
             height: 640.0,
             ..Default::default()
         })
+        .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_plugins(DefaultPlugins)
         .add_plugin(WallsPlugin)
         .add_plugin(LauncherPlugin) 
