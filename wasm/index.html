@@ -5,10 +5,21 @@
     <meta charset="UTF-8" />
     <style>
       body {
-	background-color: black;
+		background-color: black;
       }
+	  *:focus {
+		outline: none;
+	  }
     </style>
   </head>
+  <body>
+	<h1 style="color:#009999;">Pinball2D</h1>
+	<p style="font-size:14px; color:#009999; font-weight:bold; font-style:italic;">
+		Launch ball: Space<br>
+		Flippers: Left/Right arrow<br><br>
+		<a href="https://github.com/gunstein/Pinball2D" target="_blank">https://github.com/gunstein/Pinball2D</a>
+	</p>
+  </body>
   <script type="module">
   	import init from './target/wasm_pinball2d.js';
 	async function run(){
@@ -25,20 +36,20 @@
   	
   	const callback = function(mutationsList, observer) {
 	    for(let mutation of mutationsList) {
-		if (mutation.type === 'childList') {
-		    // Elements have changed
-		    let canvas = document.querySelector("canvas");
-		    if (canvas !== null)
-		    {
-		    	canvas.focus();
-		    	canvas.onblur = function() {
-			    var me = this;
-			    setTimeout(function() {
-				me.focus();
-			    }, 50);
+			if (mutation.type === 'childList') {
+				// Elements have changed
+				let canvas = document.querySelector("canvas");
+				if (canvas !== null)
+				{
+					canvas.focus();
+					canvas.onblur = function() {
+					var me = this;
+					setTimeout(function() {
+					me.focus();
+					}, 50);
+				}
+				}
 			}
-		    }
-		}
 	    }
 	};
 
