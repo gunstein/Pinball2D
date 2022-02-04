@@ -1,7 +1,10 @@
 # Pinball2D
 Using the Bevy game engine and Rapier physics engine for a simple 2D pinball game.
 
-## Running the game
+## Running the game on the web (webassembly)
+[https://pinball2d.vatnar.no/](https://pinball2d.vatnar.no/)
+
+## Running the game with Rust
 Rust and Cargo is a prerequisite.
 ```Bash
 git clone https://github.com/gunstein/Pinball2D.git
