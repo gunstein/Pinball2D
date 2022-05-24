@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use bevy_rapier2d::rapier::na::Vector2;
 use bevy_prototype_lyon::prelude::*;
 
 mod ball;
@@ -18,6 +17,8 @@ use launcher::*;
 mod pins;
 use pins::*;
 
+pub const PIXELS_PER_METER : f32 = 492.3;
+
 fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
@@ -26,6 +27,7 @@ fn main() {
             height: 640.0,
             ..Default::default()
         })
+        .insert_resource(Msaa::default())
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_plugins(DefaultPlugins)
         .add_plugin(WallsPlugin)
@@ -34,8 +36,8 @@ fn main() {
         .add_plugin(BallPlugin)
         .add_plugin(PinsPlugin)
         .add_plugin(ShapePlugin)
-        .add_startup_system(setup.system().label("main_setup"))
-        .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+        .add_startup_system(setup.label("main_setup"))
+        .add_plugin(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(PIXELS_PER_METER))
         .run();
 }
 
@@ -45,12 +47,10 @@ fn setup(
 ) {
     // Set gravity to x and spawn camera.
     //rapier_config.gravity = Vector2::zeros();
-    rapier_config.gravity = Vector2::new(0.0, -0.8);
+    rapier_config.gravity = Vec2::new(0.0, -220.0);
 
     commands
         .spawn()
-        .insert_bundle(OrthographicCameraBundle::new_2d());
-
-    rapier_config.scale = 640.0/1.3;    
+        .insert_bundle(OrthographicCameraBundle::new_2d());  
 }
 
