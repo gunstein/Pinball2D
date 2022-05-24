@@ -1,77 +1,68 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use nalgebra::{Point2};
-use bevy_prototype_lyon::prelude::*;
+use bevy_prototype_lyon::prelude as lyon;
 
 pub struct LauncherPlugin;
 
 impl Plugin for LauncherPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_startup_system(spawn_launcher.system().after("walls").label("launcher"))
-            .add_system(launcher_movement.system());
+            .add_startup_system(spawn_launcher.after("walls").label("launcher"))
+            .add_system(launcher_movement);
     }
 }
 
 #[derive(Component)]
 struct Launcher{
-    start_point : Point2<f32>,
+    start_point : Vec2,
  }
 
 fn spawn_launcher(
-    mut commands: Commands,
-    rapier_config: ResMut<RapierConfiguration>,
+    mut commands: Commands
 ) {
     //Spawn launcher
-    let shape_launcher = shapes::Rectangle {
-        extents: Vec2::new(0.05*rapier_config.scale, 0.05*rapier_config.scale),
-        origin: shapes::RectangleOrigin::Center
+    let shape_launcher = lyon::shapes::Rectangle {
+        extents: Vec2::new(crate::PIXELS_PER_METER * 0.05, crate::PIXELS_PER_METER * 0.05),
+        origin: lyon::shapes::RectangleOrigin::Center
     };
 
-    let launcher_pos : Point2<f32> = Point2::new(0.3, -0.29);
+    let launcher_pos = Vec2::new(crate::PIXELS_PER_METER * 0.3, crate::PIXELS_PER_METER * -0.58);
 
     commands
         .spawn()
         .insert_bundle(
-            GeometryBuilder::build_as(
+            lyon::GeometryBuilder::build_as(
                 &shape_launcher,
-                DrawMode::Outlined{
-                    fill_mode: FillMode::color(Color::BLACK),
-                    outline_mode: StrokeMode::new(Color::TEAL, 2.0),
+                lyon::DrawMode::Outlined{
+                    fill_mode: lyon::FillMode::color(Color::BLACK),
+                    outline_mode: lyon::StrokeMode::new(Color::TEAL, 2.0),
                 },
                 Transform::default(),
             )
         )
-        .insert_bundle(RigidBodyBundle {
-            body_type: RigidBodyType::KinematicPositionBased.into(),
-            ..Default::default()
-        })
-        .insert_bundle(ColliderBundle {
-            shape: ColliderShape::cuboid(shape_launcher.extents.x/rapier_config.scale/2.0, shape_launcher.extents.y/rapier_config.scale/2.0).into(),
-            position: launcher_pos.into(),
-            ..Default::default()
-        })
-        .insert(ColliderPositionSync::Discrete)
+        .insert(RigidBody::KinematicPositionBased)
+        .insert(Collider::cuboid(shape_launcher.extents.x/2.0, shape_launcher.extents.y/2.0))
+        .insert(Transform::from_xyz(launcher_pos.x, launcher_pos.y, 0.0))
         .insert(Launcher{start_point: launcher_pos});
     
 }
 
 fn launcher_movement(
     keyboard_input: Res<Input<KeyCode>>,
-    mut launcher_info: Query<(&Launcher, &mut RigidBodyPositionComponent)>,
+    mut launchers: Query<(&mut Launcher, &mut Transform), With<Launcher>>,
 ) {
-    for (launcher, mut rbodypos) in launcher_info.iter_mut() {
-        let mut next_ypos = rbodypos.position.translation.vector.y;
+    for (launcher, mut launcher_transform) in launchers.iter_mut() {
+        let mut next_ypos = launcher_transform.translation.y;
         
         if keyboard_input.pressed(KeyCode::Space)
         {
-            next_ypos = next_ypos + 0.04;
+            next_ypos = next_ypos + crate::PIXELS_PER_METER * 0.04;
         }
         else
         {
-            next_ypos = next_ypos - 0.04;
+            next_ypos = next_ypos - crate::PIXELS_PER_METER * 0.04;
         }   
-        let clamped_ypos = next_ypos.clamp(launcher.start_point.y, launcher.start_point.y + 0.05);
-        rbodypos.next_position.translation.vector.y = clamped_ypos;    
+        let clamped_ypos = next_ypos.clamp(launcher.start_point.y, launcher.start_point.y + crate::PIXELS_PER_METER * 0.05);
+        launcher_transform.translation.y = clamped_ypos;    
     }
 }

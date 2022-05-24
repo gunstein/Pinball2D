@@ -1,15 +1,16 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use nalgebra::{Point2};
-use bevy_prototype_lyon::prelude::*;
+use bevy_prototype_lyon::prelude as lyon;
+
+use super::BottomWall;
 
 pub struct BallPlugin;
 
 impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_startup_system(spawn_ball.system().after("launcher").label("ball"))
-            .add_system(handle_ball_events.system());
+            .add_startup_system(spawn_ball.after("launcher").label("ball"))
+            .add_system(handle_ball_intersections_with_bottom_wall);
     }
 }
 
@@ -17,64 +18,51 @@ impl Plugin for BallPlugin {
 struct Ball;
 
 fn spawn_ball(    
-    mut commands: Commands,
-    rapier_config: ResMut<RapierConfiguration>,
+    mut commands: Commands
 )
 {
-    let ball_pos : Point2<f32> = Point2::new(0.3, -0.2);
+    let ball_pos = Vec2::new(crate::PIXELS_PER_METER * 0.3, crate::PIXELS_PER_METER * -0.2);
 
-    let shape_ball = shapes::Circle{
-        radius: 0.03 * rapier_config.scale,
+    let shape_ball = lyon::shapes::Circle{
+        radius: crate::PIXELS_PER_METER * 0.03,
         center: Vec2::ZERO,
     };
 
     commands.spawn()
     .insert_bundle(
-        GeometryBuilder::build_as(
+        lyon::GeometryBuilder::build_as(
             &shape_ball,
-            DrawMode::Outlined{
-                fill_mode: FillMode::color(Color::BLACK),
-                outline_mode: StrokeMode::new(Color::TEAL, 2.0),
+            lyon::DrawMode::Outlined{
+                fill_mode: lyon::FillMode::color(Color::BLACK),
+                outline_mode: lyon::StrokeMode::new(Color::TEAL, 2.0),
             },
             Transform::default(),
         )
     )
-    .insert_bundle(RigidBodyBundle {
-        ccd: RigidBodyCcd { ccd_enabled: true, ..Default::default() }.into(),
-        ..Default::default()
-    })
-    .insert_bundle(ColliderBundle {
-        shape: ColliderShape::ball(shape_ball.radius/rapier_config.scale).into(),
-        collider_type: ColliderType::Solid.into(),
-        flags: (ActiveEvents::INTERSECTION_EVENTS).into(),
-        position: ball_pos.into(),
-        material: ColliderMaterial {
-            restitution: 0.7,
-            ..Default::default()
-        }.into(),
-        ..ColliderBundle::default()
-    })
-    .insert(ColliderPositionSync::Discrete)
+    .insert(RigidBody::Dynamic)
+    .insert(Sleeping::disabled())
+    .insert(Ccd::enabled())
+    .insert(Collider::ball(shape_ball.radius))
+    .insert(Transform::from_xyz(ball_pos.x, ball_pos.y, 0.0))
+    .insert(ActiveEvents::COLLISION_EVENTS)
+    .insert(Restitution::coefficient(0.7))
     .insert(Ball);
 }
 
 
-fn handle_ball_events(
-    mut intersection_events: EventReader<IntersectionEvent>,
-    query: Query<Entity, With<Ball>>,
-    mut commands: Commands,
-    rapier_config: ResMut<RapierConfiguration>
+fn handle_ball_intersections_with_bottom_wall(
+    rapier_context: Res<RapierContext>,
+    query_ball: Query<Entity, With<Ball>>,
+    query_bottom_wall: Query<Entity, With<BottomWall>>,
+    mut commands: Commands
 ) {
-    //This check is only ok because it's only one sensor (the bottom wall) in the game.
     let mut should_spawn_ball = false;
-    for intersection_event in intersection_events.iter() {
-        for entity in query.iter() {
-            if intersection_event.collider1.entity() == entity{
-                commands.entity(entity).despawn();
-                should_spawn_ball = true;
-            }
-            else if intersection_event.collider2.entity() == entity{
-                commands.entity(entity).despawn();
+
+    for entity_bottom_wall in query_bottom_wall.iter() {
+        for entity_ball in query_ball.iter() {
+            /* Find the intersection pair, if it exists, between two colliders. */
+            if rapier_context.intersection_pair(entity_bottom_wall, entity_ball) == Some(true) {
+                commands.entity(entity_ball).despawn();
                 should_spawn_ball = true;
             }
         }
@@ -82,6 +70,6 @@ fn handle_ball_events(
 
     if should_spawn_ball
     {
-        spawn_ball(commands, rapier_config);
+        spawn_ball(commands);
     }
 }
