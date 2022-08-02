@@ -40,7 +40,7 @@ fn spawn_walls(
         )
         .insert(RigidBody::Fixed)
         .insert(Collider::cuboid(shape_top_and_bottom_wall.extents.x/2.0, shape_top_and_bottom_wall.extents.y/2.0))
-        .insert(Sensor(true))
+        .insert(Sensor)
         .insert(Transform::from_xyz(bottom_wall_pos.x, bottom_wall_pos.y, 0.0))
         .insert(BottomWall);
      
