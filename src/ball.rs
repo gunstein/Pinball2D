@@ -1,6 +1,6 @@
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::*;
 use bevy_prototype_lyon::prelude as lyon;
+use bevy_rapier2d::prelude::*;
 
 use super::BottomWall;
 
@@ -8,8 +8,7 @@ pub struct BallPlugin;
 
 impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .add_startup_system(spawn_ball.after("launcher").label("ball"))
+        app.add_startup_system(spawn_ball.after("launcher").label("ball"))
             .add_system(handle_ball_intersections_with_bottom_wall);
     }
 }
@@ -17,44 +16,41 @@ impl Plugin for BallPlugin {
 #[derive(Component)]
 struct Ball;
 
-fn spawn_ball(    
-    mut commands: Commands
-)
-{
-    let ball_pos = Vec2::new(crate::PIXELS_PER_METER * 0.3, crate::PIXELS_PER_METER * -0.2);
+fn spawn_ball(mut commands: Commands) {
+    let ball_pos = Vec2::new(
+        crate::PIXELS_PER_METER * 0.3,
+        crate::PIXELS_PER_METER * -0.2,
+    );
 
-    let shape_ball = lyon::shapes::Circle{
+    let shape_ball = lyon::shapes::Circle {
         radius: crate::PIXELS_PER_METER * 0.03,
         center: Vec2::ZERO,
     };
 
-    commands.spawn()
-    .insert_bundle(
-        lyon::GeometryBuilder::build_as(
+    commands
+        .spawn(lyon::GeometryBuilder::build_as(
             &shape_ball,
-            lyon::DrawMode::Outlined{
+            lyon::DrawMode::Outlined {
                 fill_mode: lyon::FillMode::color(Color::BLACK),
                 outline_mode: lyon::StrokeMode::new(Color::TEAL, 2.0),
             },
             Transform::default(),
-        )
-    )
-    .insert(RigidBody::Dynamic)
-    .insert(Sleeping::disabled())
-    .insert(Ccd::enabled())
-    .insert(Collider::ball(shape_ball.radius))
-    .insert(Transform::from_xyz(ball_pos.x, ball_pos.y, 0.0))
-    .insert(ActiveEvents::COLLISION_EVENTS)
-    .insert(Restitution::coefficient(0.7))
-    .insert(Ball);
+        ))
+        .insert(RigidBody::Dynamic)
+        .insert(Sleeping::disabled())
+        .insert(Ccd::enabled())
+        .insert(Collider::ball(shape_ball.radius))
+        .insert(Transform::from_xyz(ball_pos.x, ball_pos.y, 0.0))
+        .insert(ActiveEvents::COLLISION_EVENTS)
+        .insert(Restitution::coefficient(0.7))
+        .insert(Ball);
 }
-
 
 fn handle_ball_intersections_with_bottom_wall(
     rapier_context: Res<RapierContext>,
     query_ball: Query<Entity, With<Ball>>,
     query_bottom_wall: Query<Entity, With<BottomWall>>,
-    mut commands: Commands
+    mut commands: Commands,
 ) {
     let mut should_spawn_ball = false;
 
@@ -68,8 +64,7 @@ fn handle_ball_intersections_with_bottom_wall(
         }
     }
 
-    if should_spawn_ball
-    {
+    if should_spawn_ball {
         spawn_ball(commands);
     }
 }
