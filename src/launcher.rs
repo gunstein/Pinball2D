@@ -1,12 +1,12 @@
 use bevy::prelude::*;
-use bevy_prototype_lyon::prelude as lyon;
+use bevy_prototype_lyon::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 pub struct LauncherPlugin;
 
 impl Plugin for LauncherPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_launcher.after("walls").label("launcher"))
+        app.add_startup_system(spawn_launcher)
             .add_system(launcher_movement);
     }
 }
@@ -18,12 +18,12 @@ struct Launcher {
 
 fn spawn_launcher(mut commands: Commands) {
     //Spawn launcher
-    let shape_launcher = lyon::shapes::Rectangle {
+    let shape_launcher = shapes::Rectangle {
         extents: Vec2::new(
             crate::PIXELS_PER_METER * 0.05,
             crate::PIXELS_PER_METER * 0.05,
         ),
-        origin: lyon::shapes::RectangleOrigin::Center,
+        origin: shapes::RectangleOrigin::Center,
     };
 
     let launcher_pos = Vec2::new(
@@ -32,13 +32,13 @@ fn spawn_launcher(mut commands: Commands) {
     );
 
     commands
-        .spawn(lyon::GeometryBuilder::build_as(
-            &shape_launcher,
-            lyon::DrawMode::Outlined {
-                fill_mode: lyon::FillMode::color(Color::BLACK),
-                outline_mode: lyon::StrokeMode::new(Color::TEAL, 2.0),
+        .spawn((
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape_launcher),
+                ..default()
             },
-            Transform::default(),
+            Fill::color(Color::BLACK),
+            Stroke::new(Color::TEAL, 2.0),
         ))
         .insert(RigidBody::KinematicPositionBased)
         .insert(Collider::cuboid(

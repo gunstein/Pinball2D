@@ -1,12 +1,12 @@
 use bevy::prelude::*;
-use bevy_prototype_lyon::prelude as lyon;
+use bevy_prototype_lyon::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 pub struct WallsPlugin;
 
 impl Plugin for WallsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_walls.after("main_setup").label("walls"));
+        app.add_startup_system(spawn_walls);
     }
 }
 
@@ -16,24 +16,23 @@ pub struct BottomWall;
 fn spawn_walls(mut commands: Commands) {
     //Spawn outer wall
     //Spawn top and bottom wall
-    let shape_top_and_bottom_wall = lyon::shapes::Rectangle {
+    let shape_top_and_bottom_wall = shapes::Rectangle {
         extents: Vec2::new(
             crate::PIXELS_PER_METER * 0.73,
             crate::PIXELS_PER_METER * 0.03,
         ),
-        origin: lyon::shapes::RectangleOrigin::Center,
+        origin: shapes::RectangleOrigin::Center,
     };
 
     //Spawn bottom wall
     let bottom_wall_pos = Vec2::new(0.0, crate::PIXELS_PER_METER * -0.64);
     commands
-        .spawn(lyon::GeometryBuilder::build_as(
-            &shape_top_and_bottom_wall,
-            lyon::DrawMode::Outlined {
-                fill_mode: lyon::FillMode::color(Color::TEAL),
-                outline_mode: lyon::StrokeMode::color(Color::TEAL),
+        .spawn((
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape_top_and_bottom_wall),
+                ..default()
             },
-            Transform::default(),
+            Fill::color(Color::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::cuboid(
@@ -51,13 +50,12 @@ fn spawn_walls(mut commands: Commands) {
     //Spawn top wall
     let top_wall_pos = Vec2::new(0.0, crate::PIXELS_PER_METER * 0.64);
     commands
-        .spawn(lyon::GeometryBuilder::build_as(
-            &shape_top_and_bottom_wall,
-            lyon::DrawMode::Outlined {
-                fill_mode: lyon::FillMode::color(Color::TEAL),
-                outline_mode: lyon::StrokeMode::color(Color::TEAL),
+        .spawn((
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape_top_and_bottom_wall),
+                ..default()
             },
-            Transform::default(),
+            Fill::color(Color::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::cuboid(
@@ -67,24 +65,23 @@ fn spawn_walls(mut commands: Commands) {
         .insert(Transform::from_xyz(top_wall_pos.x, top_wall_pos.y, 0.0));
 
     //Spawn left and right wall
-    let shape_left_and_right_wall = lyon::shapes::Rectangle {
+    let shape_left_and_right_wall = shapes::Rectangle {
         extents: Vec2::new(
             crate::PIXELS_PER_METER * 0.03,
             crate::PIXELS_PER_METER * 1.3,
         ),
-        origin: lyon::shapes::RectangleOrigin::Center,
+        origin: shapes::RectangleOrigin::Center,
     };
 
     //Spawn left wall
     let left_wall_pos = Vec2::new(crate::PIXELS_PER_METER * -0.35, 0.0);
     commands
-        .spawn(lyon::GeometryBuilder::build_as(
-            &shape_left_and_right_wall,
-            lyon::DrawMode::Outlined {
-                fill_mode: lyon::FillMode::color(Color::TEAL),
-                outline_mode: lyon::StrokeMode::color(Color::TEAL),
+        .spawn((
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape_left_and_right_wall),
+                ..default()
             },
-            Transform::default(),
+            Fill::color(Color::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::cuboid(
@@ -96,13 +93,12 @@ fn spawn_walls(mut commands: Commands) {
     //Spawn right wall
     let right_wall_pos = Vec2::new(crate::PIXELS_PER_METER * 0.35, 0.0);
     commands
-        .spawn(lyon::GeometryBuilder::build_as(
-            &shape_left_and_right_wall,
-            lyon::DrawMode::Outlined {
-                fill_mode: lyon::FillMode::color(Color::TEAL),
-                outline_mode: lyon::StrokeMode::color(Color::TEAL),
+        .spawn((
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape_left_and_right_wall),
+                ..default()
             },
-            Transform::default(),
+            Fill::color(Color::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::cuboid(
@@ -112,12 +108,12 @@ fn spawn_walls(mut commands: Commands) {
         .insert(Transform::from_xyz(right_wall_pos.x, right_wall_pos.y, 0.0));
 
     //Spawn launcher wall
-    let shape_launcher_wall = lyon::shapes::Rectangle {
+    let shape_launcher_wall = shapes::Rectangle {
         extents: Vec2::new(
             crate::PIXELS_PER_METER * 0.03,
             crate::PIXELS_PER_METER * 0.5,
         ),
-        origin: lyon::shapes::RectangleOrigin::Center,
+        origin: shapes::RectangleOrigin::Center,
     };
 
     let launcher_wall_pos = Vec2::new(
@@ -125,13 +121,12 @@ fn spawn_walls(mut commands: Commands) {
         crate::PIXELS_PER_METER * -0.36,
     );
     commands
-        .spawn(lyon::GeometryBuilder::build_as(
-            &shape_launcher_wall,
-            lyon::DrawMode::Outlined {
-                fill_mode: lyon::FillMode::color(Color::TEAL),
-                outline_mode: lyon::StrokeMode::color(Color::TEAL),
+        .spawn((
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape_launcher_wall),
+                ..default()
             },
-            Transform::default(),
+            Fill::color(Color::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::cuboid(
@@ -145,7 +140,7 @@ fn spawn_walls(mut commands: Commands) {
         ));
 
     //Spawn upper right obstruction
-    let shape_upper_right_obstruction = lyon::shapes::Polygon {
+    let shape_upper_right_obstruction = shapes::Polygon {
         points: vec![
             Vec2::new(0.0, 0.0),
             Vec2::new(0.0, crate::PIXELS_PER_METER * 0.25),
@@ -163,13 +158,12 @@ fn spawn_walls(mut commands: Commands) {
     );
 
     commands
-        .spawn(lyon::GeometryBuilder::build_as(
-            &shape_upper_right_obstruction,
-            lyon::DrawMode::Outlined {
-                fill_mode: lyon::FillMode::color(Color::TEAL),
-                outline_mode: lyon::StrokeMode::color(Color::TEAL),
+        .spawn((
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape_upper_right_obstruction),
+                ..default()
             },
-            Transform::default(),
+            Fill::color(Color::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::polyline(

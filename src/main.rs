@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    window::{PresentMode},
+};
 use bevy_prototype_lyon::prelude::*;
 use bevy_rapier2d::prelude::*;
 
@@ -24,13 +27,17 @@ fn main() {
         .insert_resource(Msaa::default())
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_plugins(DefaultPlugins.set(WindowPlugin {
-            window: WindowDescriptor {
-                title: "Pinball2d".to_string(),
-                width: 360.0,
-                height: 640.0,
-                ..Default::default()
-            },
-            ..Default::default()
+            primary_window: Some(Window {
+                title: "Pinball2d".into(),
+                resolution: (360., 640.).into(),
+                present_mode: PresentMode::AutoVsync,
+                // Tells wasm to resize the window according to the available canvas
+                fit_canvas_to_parent: true,
+                // Tells wasm not to override default event handling, like F5, Ctrl+R etc.
+                prevent_default_event_handling: false,
+                ..default()
+            }),
+            ..default()
         }))
         .add_plugin(WallsPlugin)
         .add_plugin(LauncherPlugin)
@@ -38,7 +45,7 @@ fn main() {
         .add_plugin(BallPlugin)
         .add_plugin(PinsPlugin)
         .add_plugin(ShapePlugin)
-        .add_startup_system(setup.label("main_setup"))
+        .add_startup_system(setup)
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(
             PIXELS_PER_METER,
         ))

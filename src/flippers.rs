@@ -1,12 +1,12 @@
 use bevy::prelude::*;
-use bevy_prototype_lyon::prelude as lyon;
+use bevy_prototype_lyon::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 pub struct FlippersPlugin;
 
 impl Plugin for FlippersPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_flippers.after("walls").label("flippers"))
+        app.add_startup_system(spawn_flippers)
             .add_system(left_flipper_movement)
             .add_system(right_flipper_movement);
     }
@@ -26,12 +26,12 @@ struct RightFlipper {
 
 fn spawn_flippers(mut commands: Commands) {
     //Spawn flippers
-    let shape_flipper: lyon::shapes::Rectangle = lyon::shapes::Rectangle {
+    let shape_flipper: shapes::Rectangle = shapes::Rectangle {
         extents: Vec2::new(
             crate::PIXELS_PER_METER * 0.25,
             crate::PIXELS_PER_METER * 0.05,
         ),
-        origin: lyon::shapes::RectangleOrigin::Center,
+        origin: shapes::RectangleOrigin::Center,
     }
     .into();
 
@@ -42,13 +42,13 @@ fn spawn_flippers(mut commands: Commands) {
     );
 
     commands
-        .spawn(lyon::GeometryBuilder::build_as(
-            &shape_flipper,
-            lyon::DrawMode::Outlined {
-                fill_mode: lyon::FillMode::color(Color::BLACK),
-                outline_mode: lyon::StrokeMode::new(Color::TEAL, 2.0),
+        .spawn((
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape_flipper),
+                ..default()
             },
-            Transform::default(),
+            Fill::color(Color::BLACK),
+            Stroke::new(Color::TEAL, 2.0),
         ))
         .insert(RigidBody::KinematicPositionBased)
         .insert(Collider::cuboid(
@@ -76,13 +76,13 @@ fn spawn_flippers(mut commands: Commands) {
     );
 
     commands
-        .spawn(lyon::GeometryBuilder::build_as(
-            &shape_flipper,
-            lyon::DrawMode::Outlined {
-                fill_mode: lyon::FillMode::color(Color::BLACK),
-                outline_mode: lyon::StrokeMode::new(Color::TEAL, 2.0),
+        .spawn((
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape_flipper),
+                ..default()
             },
-            Transform::default(),
+            Fill::color(Color::BLACK),
+            Stroke::new(Color::TEAL, 2.0),
         ))
         .insert(RigidBody::KinematicPositionBased)
         .insert(Collider::cuboid(
