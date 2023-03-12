@@ -1,12 +1,12 @@
 use bevy::prelude::*;
-use bevy_prototype_lyon::prelude as lyon;
+use bevy_prototype_lyon::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 pub struct PinsPlugin;
 
 impl Plugin for PinsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_pins.after("launcher").label("pins"))
+        app.add_startup_system(spawn_pins)
             .add_system(handle_pin_events)
             .add_system(respawn_pin_to_toggle_color);
     }
@@ -39,7 +39,7 @@ fn spawn_pins(mut commands: Commands) {
 }
 
 fn spawn_single_pin(commands: &mut Commands, position: Vec2, timestamp_last_hit: Option<f64>) {
-    let shape_pin = lyon::shapes::Circle {
+    let shape_pin = shapes::Circle {
         radius: crate::PIXELS_PER_METER * 0.05,
         center: Vec2::ZERO,
     };
@@ -52,13 +52,13 @@ fn spawn_single_pin(commands: &mut Commands, position: Vec2, timestamp_last_hit:
     }
 
     commands
-        .spawn(lyon::GeometryBuilder::build_as(
-            &shape_pin,
-            lyon::DrawMode::Outlined {
-                fill_mode: lyon::FillMode::color(Color::BLACK),
-                outline_mode: lyon::StrokeMode::new(color, 2.0),
+        .spawn((
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape_pin),
+                ..default()
             },
-            Transform::default(),
+            Fill::color(Color::BLACK),
+            Stroke::new(color, 2.0),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::ball(shape_pin.radius))

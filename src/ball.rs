@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_prototype_lyon::prelude as lyon;
+use bevy_prototype_lyon::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 use super::BottomWall;
@@ -8,7 +8,7 @@ pub struct BallPlugin;
 
 impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_ball.after("launcher").label("ball"))
+        app.add_startup_system(spawn_ball)
             .add_system(handle_ball_intersections_with_bottom_wall);
     }
 }
@@ -22,19 +22,19 @@ fn spawn_ball(mut commands: Commands) {
         crate::PIXELS_PER_METER * -0.2,
     );
 
-    let shape_ball = lyon::shapes::Circle {
+    let shape_ball = shapes::Circle {
         radius: crate::PIXELS_PER_METER * 0.03,
         center: Vec2::ZERO,
     };
 
     commands
-        .spawn(lyon::GeometryBuilder::build_as(
-            &shape_ball,
-            lyon::DrawMode::Outlined {
-                fill_mode: lyon::FillMode::color(Color::BLACK),
-                outline_mode: lyon::StrokeMode::new(Color::TEAL, 2.0),
+        .spawn((
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape_ball),
+                ..default()
             },
-            Transform::default(),
+            Fill::color(Color::BLACK),
+            Stroke::new(Color::TEAL, 2.0),
         ))
         .insert(RigidBody::Dynamic)
         .insert(Sleeping::disabled())
