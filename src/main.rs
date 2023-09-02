@@ -39,14 +39,14 @@ fn main() {
             }),
             ..default()
         }))
-        .add_plugin(WallsPlugin)
-        .add_plugin(LauncherPlugin)
-        .add_plugin(FlippersPlugin)
-        .add_plugin(BallPlugin)
-        .add_plugin(PinsPlugin)
-        .add_plugin(ShapePlugin)
-        .add_startup_system(setup)
-        .add_plugin(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(
+        .add_plugins(WallsPlugin)
+        .add_plugins(LauncherPlugin)
+        .add_plugins(FlippersPlugin)
+        .add_plugins(BallPlugin)
+        .add_plugins(PinsPlugin)
+        .add_plugins(ShapePlugin)
+        .add_systems(Startup,setup)
+        .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(
             PIXELS_PER_METER,
         ))
         .run();

@@ -6,9 +6,9 @@ pub struct PinsPlugin;
 
 impl Plugin for PinsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_pins)
-            .add_system(handle_pin_events)
-            .add_system(respawn_pin_to_toggle_color);
+        app.add_systems(Startup, spawn_pins)
+            .add_systems(Update, handle_pin_events)
+            .add_systems(Update, respawn_pin_to_toggle_color);
     }
 }
 
