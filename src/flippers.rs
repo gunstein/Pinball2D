@@ -6,9 +6,9 @@ pub struct FlippersPlugin;
 
 impl Plugin for FlippersPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_flippers)
-            .add_system(left_flipper_movement)
-            .add_system(right_flipper_movement);
+        app.add_systems(Startup, spawn_flippers)
+            .add_systems(Update, left_flipper_movement)
+            .add_systems(Update, right_flipper_movement);
     }
 }
 
