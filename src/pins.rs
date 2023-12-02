@@ -76,7 +76,7 @@ fn respawn_pin_to_toggle_color(
     mut commands: Commands,
 ) {
     for (entity, pin) in query.iter_mut() {
-        let diff = time.raw_elapsed_seconds_f64() - pin.timestamp_last_hit;
+        let diff = time.elapsed_seconds_f64() - pin.timestamp_last_hit;
         if pin.timestamp_last_hit > 0.0 && diff > 1.0 {
             //Color have been toggled for more than a second so respawn
             let pos = pin.position;
@@ -92,13 +92,13 @@ fn handle_pin_events(
     mut contact_events: EventReader<CollisionEvent>,
     mut commands: Commands,
 ) {
-    for contact_event in contact_events.iter() {
+    for contact_event in contact_events.read() {
         for (entity, pin) in query.iter() {
             if let CollisionEvent::Started(h1, h2, _event_flag) = contact_event {
                 if h1 == &entity || h2 == &entity {
                     //Respawn to change color
                     let pos = pin.position;
-                    let timestamp_last_hit = time.raw_elapsed_seconds_f64();
+                    let timestamp_last_hit = time.elapsed_seconds_f64();
                     commands.entity(entity).despawn();
                     spawn_single_pin(&mut commands, pos, Some(timestamp_last_hit));
                 }
