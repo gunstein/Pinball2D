@@ -105,14 +105,14 @@ fn spawn_flippers(mut commands: Commands) {
 }
 
 fn left_flipper_movement(
-    keyboard_input: Res<Input<KeyCode>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
     mut left_flippers: Query<(&mut LeftFlipper, &mut Transform), With<LeftFlipper>>,
 ) {
     for (mut left_flipper, mut left_flipper_transform) in left_flippers.iter_mut() {
         let mut new_angle = left_flipper.curr_angle;
         let change_angle: f32;
 
-        if keyboard_input.pressed(KeyCode::Left) {
+        if keyboard_input.pressed(KeyCode::ArrowLeft) {
             change_angle = 0.09;
         } else {
             change_angle = -0.07;
@@ -127,13 +127,13 @@ fn left_flipper_movement(
 }
 
 fn right_flipper_movement(
-    keyboard_input: Res<Input<KeyCode>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
     mut right_flippers: Query<(&mut RightFlipper, &mut Transform), With<RightFlipper>>,
 ) {
     for (mut right_flipper, mut right_flipper_transform) in right_flippers.iter_mut() {
         let mut new_angle = right_flipper.curr_angle;
         let change_angle: f32;
-        if keyboard_input.pressed(KeyCode::Right) {
+        if keyboard_input.pressed(KeyCode::ArrowRight) {
             change_angle = -0.09;
         } else {
             change_angle = 0.07;
