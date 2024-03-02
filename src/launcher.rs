@@ -52,7 +52,7 @@ fn spawn_launcher(mut commands: Commands) {
 }
 
 fn launcher_movement(
-    keyboard_input: Res<Input<KeyCode>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
     mut launchers: Query<(&mut Launcher, &mut Transform), With<Launcher>>,
 ) {
     for (launcher, mut launcher_transform) in launchers.iter_mut() {
