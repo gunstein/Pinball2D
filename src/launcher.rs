@@ -24,6 +24,7 @@ fn spawn_launcher(mut commands: Commands) {
             crate::PIXELS_PER_METER * 0.05,
         ),
         origin: shapes::RectangleOrigin::Center,
+        radii: None
     };
 
     let launcher_pos = Vec2::new(
@@ -38,7 +39,7 @@ fn spawn_launcher(mut commands: Commands) {
                 ..default()
             },
             Fill::color(Color::BLACK),
-            Stroke::new(Color::TEAL, 2.0),
+            Stroke::new(bevy::color::palettes::css::TEAL, 2.0),
         ))
         .insert(RigidBody::KinematicPositionBased)
         .insert(Collider::cuboid(

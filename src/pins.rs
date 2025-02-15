@@ -46,9 +46,9 @@ fn spawn_single_pin(commands: &mut Commands, position: Vec2, timestamp_last_hit:
 
     let temp_timestamp_last_hit = timestamp_last_hit.unwrap_or(0.0);
 
-    let mut color = Color::GREEN;
+    let mut color = bevy::color::palettes::css::GREEN;
     if temp_timestamp_last_hit == 0.0 {
-        color = Color::TEAL;
+        color = bevy::color::palettes::css::TEAL;
     }
 
     commands
@@ -76,7 +76,7 @@ fn respawn_pin_to_toggle_color(
     mut commands: Commands,
 ) {
     for (entity, pin) in query.iter_mut() {
-        let diff = time.elapsed_seconds_f64() - pin.timestamp_last_hit;
+        let diff = time.elapsed_secs_f64() - pin.timestamp_last_hit;
         if pin.timestamp_last_hit > 0.0 && diff > 1.0 {
             //Color have been toggled for more than a second so respawn
             let pos = pin.position;
@@ -98,7 +98,7 @@ fn handle_pin_events(
                 if h1 == &entity || h2 == &entity {
                     //Respawn to change color
                     let pos = pin.position;
-                    let timestamp_last_hit = time.elapsed_seconds_f64();
+                    let timestamp_last_hit = time.elapsed_secs_f64();
                     commands.entity(entity).despawn();
                     spawn_single_pin(&mut commands, pos, Some(timestamp_last_hit));
                 }
