@@ -22,6 +22,7 @@ fn spawn_walls(mut commands: Commands) {
             crate::PIXELS_PER_METER * 0.03,
         ),
         origin: shapes::RectangleOrigin::Center,
+        radii: None
     };
 
     //Spawn bottom wall
@@ -32,7 +33,7 @@ fn spawn_walls(mut commands: Commands) {
                 path: GeometryBuilder::build_as(&shape_top_and_bottom_wall),
                 ..default()
             },
-            Fill::color(Color::TEAL),
+            Fill::color(bevy::color::palettes::css::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::cuboid(
@@ -55,7 +56,7 @@ fn spawn_walls(mut commands: Commands) {
                 path: GeometryBuilder::build_as(&shape_top_and_bottom_wall),
                 ..default()
             },
-            Fill::color(Color::TEAL),
+            Fill::color(bevy::color::palettes::css::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::cuboid(
@@ -71,6 +72,7 @@ fn spawn_walls(mut commands: Commands) {
             crate::PIXELS_PER_METER * 1.3,
         ),
         origin: shapes::RectangleOrigin::Center,
+        radii: None
     };
 
     //Spawn left wall
@@ -81,7 +83,7 @@ fn spawn_walls(mut commands: Commands) {
                 path: GeometryBuilder::build_as(&shape_left_and_right_wall),
                 ..default()
             },
-            Fill::color(Color::TEAL),
+            Fill::color(bevy::color::palettes::css::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::cuboid(
@@ -98,7 +100,7 @@ fn spawn_walls(mut commands: Commands) {
                 path: GeometryBuilder::build_as(&shape_left_and_right_wall),
                 ..default()
             },
-            Fill::color(Color::TEAL),
+            Fill::color(bevy::color::palettes::css::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::cuboid(
@@ -114,6 +116,7 @@ fn spawn_walls(mut commands: Commands) {
             crate::PIXELS_PER_METER * 0.5,
         ),
         origin: shapes::RectangleOrigin::Center,
+        radii: None
     };
 
     let launcher_wall_pos = Vec2::new(
@@ -126,7 +129,7 @@ fn spawn_walls(mut commands: Commands) {
                 path: GeometryBuilder::build_as(&shape_launcher_wall),
                 ..default()
             },
-            Fill::color(Color::TEAL),
+            Fill::color(bevy::color::palettes::css::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::cuboid(
@@ -163,7 +166,7 @@ fn spawn_walls(mut commands: Commands) {
                 path: GeometryBuilder::build_as(&shape_upper_right_obstruction),
                 ..default()
             },
-            Fill::color(Color::TEAL),
+            Fill::color(bevy::color::palettes::css::TEAL),
         ))
         .insert(RigidBody::Fixed)
         .insert(Collider::polyline(

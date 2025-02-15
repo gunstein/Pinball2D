@@ -32,6 +32,7 @@ fn spawn_flippers(mut commands: Commands) {
             crate::PIXELS_PER_METER * 0.05,
         ),
         origin: shapes::RectangleOrigin::Center,
+        radii: None,
     }
     .into();
 
@@ -48,7 +49,7 @@ fn spawn_flippers(mut commands: Commands) {
                 ..default()
             },
             Fill::color(Color::BLACK),
-            Stroke::new(Color::TEAL, 2.0),
+            Stroke::new(bevy::color::palettes::css::TEAL, 2.0),
         ))
         .insert(RigidBody::KinematicPositionBased)
         .insert(Collider::cuboid(
@@ -82,7 +83,7 @@ fn spawn_flippers(mut commands: Commands) {
                 ..default()
             },
             Fill::color(Color::BLACK),
-            Stroke::new(Color::TEAL, 2.0),
+            Stroke::new(bevy::color::palettes::css::TEAL, 2.0),
         ))
         .insert(RigidBody::KinematicPositionBased)
         .insert(Collider::cuboid(

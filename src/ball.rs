@@ -34,7 +34,7 @@ fn spawn_ball(mut commands: Commands) {
                 ..default()
             },
             Fill::color(Color::BLACK),
-            Stroke::new(Color::TEAL, 2.0),
+            Stroke::new(bevy::color::palettes::css::TEAL, 2.0),
         ))
         .insert(RigidBody::Dynamic)
         .insert(Sleeping::disabled())
@@ -47,7 +47,7 @@ fn spawn_ball(mut commands: Commands) {
 }
 
 fn handle_ball_intersections_with_bottom_wall(
-    rapier_context: Res<RapierContext>,
+    rapier_context: ReadDefaultRapierContext,
     query_ball: Query<Entity, With<Ball>>,
     query_bottom_wall: Query<Entity, With<BottomWall>>,
     mut commands: Commands,
