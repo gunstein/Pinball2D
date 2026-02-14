@@ -16,6 +16,9 @@ struct Launcher {
     start_point: Vec2,
 }
 
+const LAUNCHER_PULL_DISTANCE: f32 = crate::PIXELS_PER_METER * 0.05;
+const LAUNCHER_SPEED_PER_SEC: f32 = crate::PIXELS_PER_METER * 2.4;
+
 fn spawn_launcher(mut commands: Commands) {
     //Spawn launcher
     let shape_launcher = shapes::Rectangle {
@@ -24,7 +27,7 @@ fn spawn_launcher(mut commands: Commands) {
             crate::PIXELS_PER_METER * 0.05,
         ),
         origin: shapes::RectangleOrigin::Center,
-        radii: None
+        radii: None,
     };
 
     let launcher_pos = Vec2::new(
@@ -34,19 +37,17 @@ fn spawn_launcher(mut commands: Commands) {
 
     commands
         .spawn((
-            ShapeBundle {
-                path: GeometryBuilder::build_as(&shape_launcher),
-                ..default()
-            },
-            Fill::color(Color::BLACK),
-            Stroke::new(bevy::color::palettes::css::TEAL, 2.0),
+            ShapeBuilder::with(&shape_launcher)
+                .fill(Color::BLACK)
+                .stroke((bevy::color::palettes::css::TEAL, 2.0))
+                .build(),
+            Transform::from_xyz(launcher_pos.x, launcher_pos.y, 0.0),
         ))
         .insert(RigidBody::KinematicPositionBased)
         .insert(Collider::cuboid(
             shape_launcher.extents.x / 2.0,
             shape_launcher.extents.y / 2.0,
         ))
-        .insert(Transform::from_xyz(launcher_pos.x, launcher_pos.y, 0.0))
         .insert(Launcher {
             start_point: launcher_pos,
         });
@@ -54,20 +55,51 @@ fn spawn_launcher(mut commands: Commands) {
 
 fn launcher_movement(
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut launchers: Query<(&mut Launcher, &mut Transform), With<Launcher>>,
+    time: Res<Time>,
+    mut launchers: Query<(&mut Launcher, &mut Transform)>,
 ) {
     for (launcher, mut launcher_transform) in launchers.iter_mut() {
-        let mut next_ypos = launcher_transform.translation.y;
-
-        if keyboard_input.pressed(KeyCode::Space) {
-            next_ypos = next_ypos + crate::PIXELS_PER_METER * 0.04;
-        } else {
-            next_ypos = next_ypos - crate::PIXELS_PER_METER * 0.04;
-        }
-        let clamped_ypos = next_ypos.clamp(
+        let next_ypos = next_launcher_y(
+            launcher_transform.translation.y,
+            keyboard_input.pressed(KeyCode::Space),
             launcher.start_point.y,
-            launcher.start_point.y + crate::PIXELS_PER_METER * 0.05,
+            time.delta_secs(),
         );
-        launcher_transform.translation.y = clamped_ypos;
+        launcher_transform.translation.y = next_ypos;
+    }
+}
+
+fn next_launcher_y(current_y: f32, is_pressed: bool, start_y: f32, delta_secs: f32) -> f32 {
+    let y_delta = LAUNCHER_SPEED_PER_SEC * delta_secs;
+    let mut next_y = current_y;
+
+    if is_pressed {
+        next_y += y_delta;
+    } else {
+        next_y -= y_delta;
+    }
+
+    next_y.clamp(start_y, start_y + LAUNCHER_PULL_DISTANCE)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn launcher_respects_bounds() {
+        let max_y = next_launcher_y(0.0, true, 0.0, 10.0);
+        let min_y = next_launcher_y(0.0, false, 0.0, 10.0);
+
+        assert_eq!(max_y, LAUNCHER_PULL_DISTANCE);
+        assert_eq!(min_y, 0.0);
+    }
+
+    #[test]
+    fn launcher_motion_is_time_based() {
+        let small_steps = (0..10).fold(0.0, |y, _| next_launcher_y(y, true, 0.0, 1.0 / 600.0));
+        let one_step = next_launcher_y(0.0, true, 0.0, 1.0 / 60.0);
+
+        assert!((small_steps - one_step).abs() < 0.0001);
     }
 }

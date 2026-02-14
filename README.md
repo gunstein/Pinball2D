@@ -1,8 +1,15 @@
 # Pinball2D
-Using the Bevy game engine and Rapier physics engine for a simple 2D pinball game.
+Using the Bevy 0.17 game engine and Rapier physics engine for a simple 2D pinball game.
 
 ## Running the game on the web (webassembly)
 [https://pinball2d.vatnar.no/](https://pinball2d.vatnar.no/)
+
+To build and serve locally with [Trunk](https://trunkrs.dev/):
+```Bash
+rustup target add wasm32-unknown-unknown
+cargo install trunk
+trunk serve
+```
 
 ## Running the game with Rust
 Rust and Cargo is a prerequisite.

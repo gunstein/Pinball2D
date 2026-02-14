@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Pinball2D</title>
+        <link data-trunk rel="rust" data-wasm-opt="0" />
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                background-color: black;
+            }
+            #bevy-canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+            #overlay {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                z-index: 10;
+                pointer-events: none;
+            }
+            #overlay a {
+                pointer-events: auto;
+            }
+            *:focus {
+                outline: none;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="bevy-canvas"></canvas>
+        <div id="overlay">
+            <h1 style="color: #009999; margin: 0">Pinball2D</h1>
+            <p
+                style="
+                    font-size: 14px;
+                    color: #009999;
+                    font-weight: bold;
+                    font-style: italic;
+                "
+            >
+                Launch ball: Space<br />
+                Flippers: Left/Right arrow<br /><br />
+                <a href="https://github.com/gunstein/Pinball2D" target="_blank"
+                    >https://github.com/gunstein/Pinball2D</a
+                >
+            </p>
+        </div>
+    </body>
+</html>

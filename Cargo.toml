@@ -6,16 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = "0.15"
-bevy_rapier2d = "0.28"
-bevy_prototype_lyon = "0.13"
+bevy = "0.17.3"
+bevy_rapier2d = "0.32.0"
+bevy_prototype_lyon = "0.15.0"
 
-[dev-dependencies]
-bevy = "0.15"
-bevy_rapier2d = "0.28"
-bevy_prototype_lyon = "0.13"
-
-# [profile.release]
-# opt-level = 'z'
-# lto = "thin"
-
+[profile.release]
+opt-level = 'z'
+lto = "thin"
